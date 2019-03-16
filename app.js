@@ -1,10 +1,18 @@
-var express = require('express');
-var app = express();
+const fs = require('fs')
+const https = require('https')
+const express = require('express')
 
-app.get('/', function (req, res) {
-    res.send('Hello World!');
-});
+const app = express()
 
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-});
+const options = {
+    key: fs.readFileSync('.ssl/private.key'),
+    cert: fs.readFileSync('.ssl/certificate.crt')
+}
+
+app.get('/', (res, req) => {
+    req.send('secure')
+})
+
+https.createServer(options, app).listen(443, () => {
+    console.log('tars-webhook listening on port 3000!')
+})
