@@ -1,24 +1,21 @@
-const fs = require('fs')
-const https = require('https')
+const axios = require('axios')
 const express = require('express')
 
 const app = express()
-const tars_host = 'http://10.138.0.3:3000/'
+const tars_host = 'http://10.138.0.3:80/'
 
-app.get('/', (res, req) => {
-    req.send('valid')
+app.use(express.json())
+
+app.get('/', (req, res) => {
+    res.send('valid')
 })
 
-app.post('/', async (res, req) => {
-    await axios.post(tars_host + 'webhook')
+app.post('/', async (req, res) => {
+    console.log(JSON.stringify(req.body, null, 2) + '\n')
+    await axios.post(tars_host)
     res.sendStatus(200)
 })
 
-const options = {
-    key: fs.readFileSync('.ssl/private.key'),
-    cert: fs.readFileSync('.ssl/certificate.crt')
-}
-
-https.createServer(options, app).listen(443, () => {
-    console.log('tars-webhook listening on port 3000!')
+app.listen(80, () => {
+    console.log('tars-webhook listening on port 80!')
 })
